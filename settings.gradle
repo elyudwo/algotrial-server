@@ -1,0 +1,3 @@
+rootProject.name = 'inuStagram'
+
+include 'webclient', 'core', 'infra'

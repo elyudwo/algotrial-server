@@ -1,0 +1,25 @@
+spring:
+  data:
+    redis:
+      host: ${redis.hostname}
+      port: 6379
+
+cloud:
+  aws:
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: ${s3.access}
+      secret-key: ${s3.secret}
+    s3:
+      bucket: ${s3.name}
+
+jwt:
+  secret: ${jwt.secret}
+
+ffmpeg:
+  dir:
+    ffmpeg: ${ffmpeg.ffmpeg}
+    ffprobe: ${ffmpeg.ffprobe}
