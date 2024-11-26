@@ -9,7 +9,6 @@ import io.kr.inu.infra.s3.MultipartDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -23,15 +22,15 @@ public class ProblemService {
     private final InputOutputS3Repository inputOutputS3Repository;
 
     @Transactional
-    public void createProblem(CreateProblemReqDto createProblemReqDto) {
+    public void createProblem(CreateProblemReqDto createProblemReqDto,
+                              MultipartFile input, MultipartFile output) {
         List<TestCaseEntity> testCaseEntity = createProblemReqDto.toTestCaseEntity();
         ProblemEntity problemEntity = createProblemReqDto.toProblemEntity(testCaseEntity);
         problemRepository.save(problemEntity);
+        createTestCaseFile(input, output);
     }
 
-    @Transactional
-    public void createTestCaseFile(@RequestPart(name = "input") MultipartFile input,
-                                   @RequestPart(name = "output") MultipartFile output) {
+    public void createTestCaseFile(MultipartFile input, MultipartFile output) {
         try {
             MultipartDto inputDto = new MultipartDto(input.getOriginalFilename(), input.getSize(),
                     input.getContentType(), input.getInputStream());
