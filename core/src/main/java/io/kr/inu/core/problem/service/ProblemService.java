@@ -26,19 +26,21 @@ public class ProblemService {
                               MultipartFile input, MultipartFile output) {
         List<TestCaseEntity> testCaseEntity = createProblemReqDto.toTestCaseEntity();
         ProblemEntity problemEntity = createProblemReqDto.toProblemEntity(testCaseEntity);
-        problemRepository.save(problemEntity);
-        createTestCaseFile(input, output);
+        ProblemEntity problem = problemRepository.save(problemEntity);
+        createTestCaseFile(problem.getId(), input, output);
     }
 
-    public void createTestCaseFile(MultipartFile input, MultipartFile output) {
+    public void createTestCaseFile(Long problemId, MultipartFile input, MultipartFile output) {
         try {
             MultipartDto inputDto = new MultipartDto(input.getOriginalFilename(), input.getSize(),
                     input.getContentType(), input.getInputStream());
             MultipartDto outputDto = new MultipartDto(output.getOriginalFilename(), output.getSize(),
                     output.getContentType(), output.getInputStream());
 
-            inputOutputS3Repository.insertTestCases(inputDto);
-            inputOutputS3Repository.insertTestCases(outputDto);
+            String inputName = "inputData:" + problemId;
+            String outputName = "outputData:" + problemId;
+            inputOutputS3Repository.insertTestCases(inputName, inputDto);
+            inputOutputS3Repository.insertTestCases(outputName, outputDto);
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed upload Test Data");
         }

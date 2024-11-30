@@ -15,13 +15,11 @@ public class InputOutputS3Repository {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public void insertTestCases(MultipartDto multipartDto) {
-        String originalFilename = multipartDto.getOriginalFileName();
-
+    public void insertTestCases(String name, MultipartDto multipartDto) {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(multipartDto.getFileSize());
         metadata.setContentType(multipartDto.getContentType());
 
-        amazonS3.putObject(bucket, originalFilename, multipartDto.getInputStream(), metadata);
+        amazonS3.putObject(bucket, name, multipartDto.getInputStream(), metadata);
     }
 }
